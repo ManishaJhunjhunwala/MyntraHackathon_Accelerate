@@ -11,8 +11,8 @@ Extract the clothes worn by these lead-artists
 
 <h3>Result of Object Detection and Cloth Extraction</h3>
 
-![alt text](https://github.com/Mani![image13](https://user-images.githubusercontent.com/47256063/114109944-ffbd4100-98f3-11eb-944c-876ef6cfdebd.jpg)
-![alt text](https://github.c![cloth_image13](https://user-images.githubusercontent.com/47256063/114109967-0cda3000-98f4-11eb-8d22-502ef27df1a0.jpg)
+![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/lead_artist/image13.jpg)
+![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/result/cloth_image13.jpg)
 
 *Step 4:*
 Reverse Image google search these clothing images in Myntra dataset OR find matching fashion images through the similarity network
@@ -22,8 +22,8 @@ Reverse Image google search these clothing images in Myntra dataset OR find matc
 
 <h3>Result of Similarity Network</h3>
 
-![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/similarity-search-for-fashion-deeplearning/blob/results/q1.png)
-![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/similarity-search-for-fashion-deeplearning/blob/results/s1.png)
+![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/similarity-search-for-fashion-deeplearning/results/q1.png)
+![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/similarity-search-for-fashion-deeplearning/results/s1.png)
 
 ![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/similarity-search-for-fashion-deeplearning/results/q2.png)
 ![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/similarity-search-for-fashion-deeplearning/results/s2.png)
