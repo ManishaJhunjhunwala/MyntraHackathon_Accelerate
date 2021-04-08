@@ -1,6 +1,6 @@
 # MyntraHackathon_Accelerate
 
-*Step 1:
+*Step 1:*
 Extract frames from a live running video
 
 *Step 2:
