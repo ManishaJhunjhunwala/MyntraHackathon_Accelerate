@@ -18,15 +18,15 @@ Extract the clothes worn by these lead-artists
 Reverse Image google search these clothing images in Myntra dataset OR find matching fashion images through the similarity network
 
 <h3>Dataset</h3>
-<p><a href="http://mvc-datasets.github.io/MVC/" target="_blank">MVC</a> dataset for cloth retrieval.</p>
+<p><a href="http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion.html" target="_blank">Deep Fashion Dataset</a> dataset for cloth retrieval.</p>
 
 <h3>Result of Similarity Network</h3>
 
-![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/similarity-search-for-fashion-deeplearning/results/q1.png)
-![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/similarity-search-for-fashion-deeplearning/results/s1.png)
+![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/blob/main/output_similarity_model/resnet50_retrieval_0.png)
+![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/blob/main/output_similarity_model/resnet50_retrieval_1.png)
 
-![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/similarity-search-for-fashion-deeplearning/results/q2.png)
-![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/similarity-search-for-fashion-deeplearning/results/s2.png)
+![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/blob/main/output_similarity_model/resnet50_retrieval_2.png)
+![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/blob/main/output_similarity_model/resnet50_retrieval_4.png)
 
-![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/similarity-search-for-fashion-deeplearning/results/q3.png)
-![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/similarity-search-for-fashion-deeplearning/results/s3.png)
+![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/blob/main/output_similarity_model/resnet50_retrieval_5.png)
+
