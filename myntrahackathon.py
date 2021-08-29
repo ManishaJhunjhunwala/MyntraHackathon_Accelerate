@@ -70,6 +70,10 @@ from keras.applications.resnet50 import ResNet50
 from keras.preprocessing.image import img_to_array
 from keras.preprocessing.image import load_img
 from keras.preprocessing.image import save_img
+
+from IO_utils import read_imgs_dir
+from transform_utils import apply_transformer,resize_img, normalize_img
+from plot_utils import plot_query_retrieval
 print("All imports added")
 
 
