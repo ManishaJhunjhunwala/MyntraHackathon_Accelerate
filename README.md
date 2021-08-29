@@ -23,9 +23,7 @@ Extract the clothes worn by these lead-artists
 *Step 4:*
 Reverse Image google search these clothing images in Myntra dataset OR find matching fashion images through the similarity network
 
-*Working of Similarity Model*
-
-# Similar Image Finder
+## *Working of Similarity Model*
 
 This model will find the n similar images from the training dataset of the input image. It leverages the feature extraction of pre-trained of resnet50
 and KNN algorithm to find similar images.
@@ -44,22 +42,24 @@ Keras,sklearn,skimage
 
 ## Folder strucutre:
 
-myntrahackathon.py : It containes the core code. It needs to be invoked to process the video and get all similar images. We can customise how many similar images is needed to be fetched.
+**myntrahackathon.py** : It containes the core code. It needs to be invoked to process the video and get all similar images. We can customise how many similar images is needed to be fetched.
 
-data: In this folder training data will reside in train folder. Query image will reside in test folder(you can keep as many as you want).
+**data**: In this folder training data will reside in train folder. Query image will reside in test folder(you can keep as many as you want).
 
-output/resnet50: this folder contains the results from similarity model and it will be created automatically.
+**output/resnet50**: this folder contains the results from similarity model and it will be created automatically.
 
-output_similarity_model: this folder contains the final output with query images through video processing and its similar images.
+**output_similarity_model**: this folder contains the final output with query images through video processing and its similar images.
 
-UI_wireframes : It contains the design wireframes that we had proposed for the solution hack. It is created using Figma.
+**UI_wireframes** : It contains the design wireframes that we had proposed for the solution hack. It is created using Figma.
 
-lead_artist : This folder contains the intermediate images of the lead artists extracted from the frames of the video. These images will serve as as input to the similarity model created using resnet50 and knn.
+**lead_artist** : This folder contains the intermediate images of the lead artists extracted from the frames of the video. These images will serve as as input to the similarity model created using resnet50 and knn.
 
 *Other files contains various utility functions that will be used in core program file.*
-IO_utils.py : It contains utility functions to read images with common extensions from a directory and save images in a  directory.
-plot_utils.py: It contains utility functions to plot the input and output images in the required format to demonstrate the results.
-transform_utils.py : It contains various utility functions to transform the images like resizing, normalising etc.
+**IO_utils.py** : It contains utility functions to read images with common extensions from a directory and save images in a  directory.
+
+**plot_utils.py**: It contains utility functions to plot the input and output images in the required format to demonstrate the results.
+
+**transform_utils.py** : It contains various utility functions to transform the images like resizing, normalising etc.
 
 
 <h3>Dataset</h3>
