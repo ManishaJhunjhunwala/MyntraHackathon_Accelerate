@@ -72,6 +72,166 @@ from keras.preprocessing.image import load_img
 from keras.preprocessing.image import save_img
 print("All imports added")
 
+
+"""Code to clear the existing images in folder"""
+
+#clear source folder
+folder = path_lead_artist
+for filename in os.listdir(folder):
+    file_path = os.path.join(folder, filename)
+    try:
+        if os.path.isfile(file_path) or os.path.islink(file_path):
+            os.unlink(file_path)
+        elif os.path.isdir(file_path):
+            shutil.rmtree(file_path)
+    except Exception as e:
+        print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+print("Source cleared..!!")
+
+#clear destination folder
+folder = path_result
+for filename in os.listdir(folder):
+    file_path = os.path.join(folder, filename)
+    try:
+        if os.path.isfile(file_path) or os.path.islink(file_path):
+            os.unlink(file_path)
+        elif os.path.isdir(file_path):
+            shutil.rmtree(file_path)
+    except Exception as e:
+        print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+print("Destination cleared..!!")
+
+#clear output folder
+folder = path_resnet50
+for filename in os.listdir(folder):
+    file_path = os.path.join(folder, filename)
+    try:
+        if os.path.isfile(file_path) or os.path.islink(file_path):
+            os.unlink(file_path)
+        elif os.path.isdir(file_path):
+            shutil.rmtree(file_path)
+    except Exception as e:
+        print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+print("Output cleared..!!")
+
+"""Code to capture images from video and save in a folder"""
+
+vidcap = cv2.VideoCapture(path_video_file)
+
+def getFrame(sec):
+    vidcap.set(cv2.CAP_PROP_POS_MSEC,sec*1000)
+    hasFrames,image = vidcap.read()
+    if hasFrames:
+        cv2.imwrite(path_lead_artist+"/image"+str(count)+".jpg", image)     # save frame as JPG file
+    return hasFrames
+
+frames = vidcap.get(cv2.CAP_PROP_FRAME_COUNT)
+fps = int(vidcap.get(cv2.CAP_PROP_FPS))
+# calculate dusration of the video
+seconds = int(frames / fps)
+video_time = str(datetime.timedelta(seconds=seconds))
+print("Duration of video (in seconds) :", seconds)
+print("Video time:", video_time)
+
+
+sec = 0
+frameRate = 9 #//it will capture image in each 9 second
+count=1
+success = getFrame(sec)
+while sec <= seconds:
+  count = count + 1
+  sec = sec + frameRate
+  sec = round(sec, 2)
+  success = getFrame(sec)
+print ("Images extracted from Video clip..!!")
+
+"""Code to extract clothes from the images extracted"""
+
+def predictor(img_file,image_path):
+	#print(img_file)
+	image_path = path_lead_artist + "/"+img_file
+	img = cv2.imread(image_path)
+	#print(img)
+	cv2.imwrite("test.jpg",img)
+	resize = cv2.resize(img,(64,64))
+	#resize = np.expand_dims(resize,axis=0)
+	img_fin = np.reshape(resize,[1,64,64,3])
+	json_file = open(path_model1, 'r')
+	loaded_model_json = json_file.read()
+	json_file.close()
+	loaded_model = model_from_json(loaded_model_json)
+	loaded_model.load_weights(path_model2)
+	#print("Loaded model from disk")
+	prediction = loaded_model.predict_classes(img_fin)
+	prediction = np.squeeze(prediction,axis=1)
+	predict = np.squeeze(prediction,axis=0)
+	return int(predict)
+
+def bg_elimination(img_file,image_path):
+    predict = predictor(img_file,image_path)
+    file = path_annotation
+    reader = pd.read_csv(file)
+    #print(predict)
+    img = cv2.imread(image_path)
+    img = cv2.resize(img,(300,500))
+    #seg = image(image,reader.x1[predict],reader.y1[predict],reader.x2[predict],reader.y2[predict],reader.i[predict])
+    mask = np.zeros(img.shape[:2],np.uint8)   
+    bgdModel = np.zeros((1,65),np.float64)
+    fgdModel = np.zeros((1,65),np.float64)
+    rect = (reader.x1[predict],reader.y1[predict],reader.x2[predict],reader.y2[predict])
+    cv2.grabCut(img,mask,rect,bgdModel,fgdModel,reader.i[predict],cv2.GC_INIT_WITH_RECT)
+    mask2 = np.where((mask==2)|(mask==0),0,1).astype('uint8')
+    img_cut = img*mask2[:,:,np.newaxis]
+    cv2.imwrite(path_result + "/back_"+str(img_file),img_cut)
+
+for img_file in os.listdir(path_lead_artist):
+	image_path= path_lead_artist + "/"+img_file
+	bg_elimination(img_file,image_path)
+
+	# define the upper and lower boundaries of the HSV pixel intensities to be considered 'skin'
+	lower = np.array([0, 48, 80], dtype = "uint8")
+	upper = np.array([20, 255, 255], dtype = "uint8")
+
+
+	# grab the current frame
+	frame=cv2.imread(path_result + "/back_"+str(img_file))
+	fr=cv2.imread(path_result + "/back_"+str(img_file))
+	fr = imutils.resize(fr, width = 400)
+	# if we are viewing a video and we did not grab a frame, then we have reached the end of the video
+
+
+	# resize the frame, convert it to the HSV color space, and determine the HSV pixel intensities that fall into the speicifed upper and lower boundaries
+	frame = imutils.resize(frame, width = 400)
+	converted = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+	skinMask = cv2.inRange(converted, lower, upper)
+
+	# apply a series of erosions and dilations to the mask using an elliptical kernel
+	#print("\n",img_file)
+	kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))
+	skinMask = cv2.erode(skinMask, kernel, iterations = 2)
+	skinMask = cv2.dilate(skinMask, kernel, iterations = 2)
+
+	# blur the mask to help remove noise, then apply the mask to the frame
+	skinMask = cv2.GaussianBlur(skinMask, (3, 3), 0)
+	#print(fr.size,skinMask.size,frame.size)
+	cloth = cv2.bitwise_not(skinMask)
+	
+	#only_cloth = cv2.bitwise_and(frame, frame, mask = cloth)
+	#cv2.imwrite(path_result + "/cloth_"+str(img_file),only_cloth)
+
+	#cv2.imwrite(path_result + "/skin_"+str(img_file),cloth)
+	# show the skin in the image along with the mask
+	#cv2.imwrite(path_result + "/stack_"+str(img_file), np.hstack([frame, only_cloth]))
+	# cleanup the camera and close any open windows
+
+print("Image extraction complete")
+
+
+"""Similarity Model"""
+
 """Transform Utils"""
 
 # Apply transformations to multiple images
@@ -238,163 +398,7 @@ def save_img(filePath, img):
 
 print("IO Utils ready")
 
-"""Code to clear the existing images in folder"""
-
-#clear source folder
-folder = path_lead_artist
-for filename in os.listdir(folder):
-    file_path = os.path.join(folder, filename)
-    try:
-        if os.path.isfile(file_path) or os.path.islink(file_path):
-            os.unlink(file_path)
-        elif os.path.isdir(file_path):
-            shutil.rmtree(file_path)
-    except Exception as e:
-        print('Failed to delete %s. Reason: %s' % (file_path, e))
-
-print("Source cleared..!!")
-
-#clear destination folder
-folder = path_result
-for filename in os.listdir(folder):
-    file_path = os.path.join(folder, filename)
-    try:
-        if os.path.isfile(file_path) or os.path.islink(file_path):
-            os.unlink(file_path)
-        elif os.path.isdir(file_path):
-            shutil.rmtree(file_path)
-    except Exception as e:
-        print('Failed to delete %s. Reason: %s' % (file_path, e))
-
-print("Destination cleared..!!")
-
-#clear output folder
-folder = path_resnet50
-for filename in os.listdir(folder):
-    file_path = os.path.join(folder, filename)
-    try:
-        if os.path.isfile(file_path) or os.path.islink(file_path):
-            os.unlink(file_path)
-        elif os.path.isdir(file_path):
-            shutil.rmtree(file_path)
-    except Exception as e:
-        print('Failed to delete %s. Reason: %s' % (file_path, e))
-
-print("Output cleared..!!")
-
-"""Code to capture images from video and save in a folder"""
-
-vidcap = cv2.VideoCapture(path_video_file)
-
-def getFrame(sec):
-    vidcap.set(cv2.CAP_PROP_POS_MSEC,sec*1000)
-    hasFrames,image = vidcap.read()
-    if hasFrames:
-        cv2.imwrite(path_lead_artist+"/image"+str(count)+".jpg", image)     # save frame as JPG file
-    return hasFrames
-
-frames = vidcap.get(cv2.CAP_PROP_FRAME_COUNT)
-fps = int(vidcap.get(cv2.CAP_PROP_FPS))
-# calculate dusration of the video
-seconds = int(frames / fps)
-video_time = str(datetime.timedelta(seconds=seconds))
-print("Duration of video (in seconds) :", seconds)
-print("Video time:", video_time)
-
-
-sec = 0
-frameRate = 9 #//it will capture image in each 9 second
-count=1
-success = getFrame(sec)
-while sec <= seconds:
-  count = count + 1
-  sec = sec + frameRate
-  sec = round(sec, 2)
-  success = getFrame(sec)
-print ("Images extracted from Video clip..!!")
-
-"""Code to extract clothes from the images extracted"""
-
-def predictor(img_file,image_path):
-	#print(img_file)
-	image_path = path_lead_artist + "/"+img_file
-	img = cv2.imread(image_path)
-	#print(img)
-	cv2.imwrite("test.jpg",img)
-	resize = cv2.resize(img,(64,64))
-	#resize = np.expand_dims(resize,axis=0)
-	img_fin = np.reshape(resize,[1,64,64,3])
-	json_file = open(path_model1, 'r')
-	loaded_model_json = json_file.read()
-	json_file.close()
-	loaded_model = model_from_json(loaded_model_json)
-	loaded_model.load_weights(path_model2)
-	#print("Loaded model from disk")
-	prediction = loaded_model.predict_classes(img_fin)
-	prediction = np.squeeze(prediction,axis=1)
-	predict = np.squeeze(prediction,axis=0)
-	return int(predict)
-
-def bg_elimination(img_file,image_path):
-    predict = predictor(img_file,image_path)
-    file = path_annotation
-    reader = pd.read_csv(file)
-    #print(predict)
-    img = cv2.imread(image_path)
-    img = cv2.resize(img,(300,500))
-    #seg = image(image,reader.x1[predict],reader.y1[predict],reader.x2[predict],reader.y2[predict],reader.i[predict])
-    mask = np.zeros(img.shape[:2],np.uint8)   
-    bgdModel = np.zeros((1,65),np.float64)
-    fgdModel = np.zeros((1,65),np.float64)
-    rect = (reader.x1[predict],reader.y1[predict],reader.x2[predict],reader.y2[predict])
-    cv2.grabCut(img,mask,rect,bgdModel,fgdModel,reader.i[predict],cv2.GC_INIT_WITH_RECT)
-    mask2 = np.where((mask==2)|(mask==0),0,1).astype('uint8')
-    img_cut = img*mask2[:,:,np.newaxis]
-    cv2.imwrite(path_result + "/back_"+str(img_file),img_cut)
-
-for img_file in os.listdir(path_lead_artist):
-	image_path= path_lead_artist + "/"+img_file
-	bg_elimination(img_file,image_path)
-
-	# define the upper and lower boundaries of the HSV pixel intensities to be considered 'skin'
-	lower = np.array([0, 48, 80], dtype = "uint8")
-	upper = np.array([20, 255, 255], dtype = "uint8")
-
-
-	# grab the current frame
-	frame=cv2.imread(path_result + "/back_"+str(img_file))
-	fr=cv2.imread(path_result + "/back_"+str(img_file))
-	fr = imutils.resize(fr, width = 400)
-	# if we are viewing a video and we did not grab a frame, then we have reached the end of the video
-
-
-	# resize the frame, convert it to the HSV color space, and determine the HSV pixel intensities that fall into the speicifed upper and lower boundaries
-	frame = imutils.resize(frame, width = 400)
-	converted = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-	skinMask = cv2.inRange(converted, lower, upper)
-
-	# apply a series of erosions and dilations to the mask using an elliptical kernel
-	#print("\n",img_file)
-	kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))
-	skinMask = cv2.erode(skinMask, kernel, iterations = 2)
-	skinMask = cv2.dilate(skinMask, kernel, iterations = 2)
-
-	# blur the mask to help remove noise, then apply the mask to the frame
-	skinMask = cv2.GaussianBlur(skinMask, (3, 3), 0)
-	#print(fr.size,skinMask.size,frame.size)
-	cloth = cv2.bitwise_not(skinMask)
-	
-	#only_cloth = cv2.bitwise_and(frame, frame, mask = cloth)
-	#cv2.imwrite(path_result + "/cloth_"+str(img_file),only_cloth)
-
-	#cv2.imwrite(path_result + "/skin_"+str(img_file),cloth)
-	# show the skin in the image along with the mask
-	#cv2.imwrite(path_result + "/stack_"+str(img_file), np.hstack([frame, only_cloth]))
-	# cleanup the camera and close any open windows
-
-print("Image extraction complete")
-
-"""Similarity Model"""
+""" Similarity Model """
 
 # Class for Applying transformations to all images
 class ImageTransformer(object):
