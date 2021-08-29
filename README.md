@@ -42,6 +42,10 @@ Keras,sklearn,skimage
 
 ## Folder strucutre:
 
+**input.mp4** : It is the dummy video file which is used as an input for the demonstration of the wroking of the product.
+
+**Output_Myntra_Finale.mp4** : Video demonstrating the working of our hack.
+
 **myntrahackathon.py** : It containes the core code. It needs to be invoked to process the video and get all similar images. We can customise how many similar images is needed to be fetched.
 
 **data**: In this folder training data will reside in train folder. Query image will reside in test folder(you can keep as many as you want).
