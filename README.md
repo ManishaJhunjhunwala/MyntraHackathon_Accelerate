@@ -1,4 +1,4 @@
-# MyntraHackathon_Accelerate
+# Myntra Snaplook
 
 This project is the prototype submission for Myntra's WeForShe Hackathon Theme Accelerate. We have worked on to accelerate the
 product discoverability and personalisation of Myntra's products.
