@@ -16,9 +16,9 @@ Extract the clothes worn by these lead-artists
 
 <h3>Result of Object Detection and Cloth Extraction</h3>
 
-![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/lead_artist/back_image1.jpg)
-![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/lead_artist/back_image3.jpg)
-![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/tree/main/lead_artist/back_image5.jpg)
+![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/blob/main/lead_artist/back_image1.jpg)
+![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/blob/main/lead_artist/back_image3.jpg)
+![alt text](https://github.com/ManishaJhunjhunwala/MyntraHackathon_Accelerate/blob/main/lead_artist/back_image5.jpg)
 
 *Step 4:*
 Reverse Image google search these clothing images in Myntra dataset OR find matching fashion images through the similarity network
